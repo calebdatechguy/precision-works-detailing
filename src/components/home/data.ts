@@ -9,7 +9,7 @@ export type PackageTier = {
   includes: string[]
   featured?: boolean
   icon: string
-  bookingUrl: string
+  bookingUrl?: string
   bookingUrlSuvTruck?: string
 }
 
@@ -339,49 +339,6 @@ export const reviews: Review[] = [
   },
 ]
 
-function makeBg(label: string, variant: 'before' | 'after') {
-  const bg = variant === 'before' ? '#2C323C' : '#0C2A52'
-  const bodyFill = variant === 'before' ? '#4A5568' : '#1E3A6E'
-  const shineColor = variant === 'before' ? '#8899AA' : '#5BAEFF'
-  const roadColor = variant === 'before' ? '#1A1E25' : '#071428'
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
-  <defs>
-    <radialGradient id="glow" cx="50%" cy="60%" r="50%">
-      <stop offset="0%" stop-color="${shineColor}" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="${bg}" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${variant === 'before' ? '#1A2030' : '#071428'}"/>
-      <stop offset="100%" stop-color="${bg}"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="700" fill="url(#sky)"/>
-  <rect x="0" y="480" width="1200" height="220" fill="${roadColor}" rx="0"/>
-  <rect x="0" y="478" width="1200" height="4" fill="${shineColor}" fill-opacity="0.08"/>
-  <rect x="540" y="490" width="120" height="8" fill="rgba(255,255,255,0.06)" rx="4"/>
-  <ellipse cx="600" cy="520" rx="480" ry="60" fill="${bodyFill}" fill-opacity="0.25"/>
-  <rect x="180" y="370" width="840" height="130" rx="28" fill="${bodyFill}"/>
-  <rect x="310" y="290" width="560" height="110" rx="20" fill="${bodyFill}" fill-opacity="0.85"/>
-  <rect x="315" y="295" width="555" height="100" rx="18" fill="${shineColor}" fill-opacity="${variant === 'after' ? '0.14' : '0.05'}"/>
-  <line x1="600" y1="295" x2="600" y2="395" stroke="${bg}" stroke-width="2" stroke-opacity="0.4"/>
-  <rect x="185" y="373" width="830" height="3" rx="2" fill="${shineColor}" fill-opacity="0.2"/>
-  <circle cx="330" cy="480" r="72" fill="#0D1117"/>
-  <circle cx="330" cy="480" r="52" fill="#191F2A"/>
-  <circle cx="330" cy="480" r="28" fill="${bodyFill}"/>
-  ${variant === 'after' ? `<circle cx="330" cy="480" r="20" fill="${shineColor}" fill-opacity="0.5"/>` : ''}
-  <circle cx="870" cy="480" r="72" fill="#0D1117"/>
-  <circle cx="870" cy="480" r="52" fill="#191F2A"/>
-  <circle cx="870" cy="480" r="28" fill="${bodyFill}"/>
-  ${variant === 'after' ? `<circle cx="870" cy="480" r="20" fill="${shineColor}" fill-opacity="0.5"/>` : ''}
-  <rect x="180" y="420" width="50" height="18" rx="5" fill="${variant === 'after' ? '#FFE066' : '#555'}"/>
-  <rect x="970" y="420" width="50" height="18" rx="5" fill="${variant === 'after' ? '#FF5555' : '#444'}"/>
-  <rect x="186" y="376" width="828" height="120" rx="26" fill="url(#glow)"/>
-  <text x="60" y="80" font-family="Georgia,serif" font-size="52" font-weight="700" fill="white" fill-opacity="0.92">${variant === 'before' ? 'Before' : 'After'}</text>
-  <text x="60" y="130" font-family="Georgia,serif" font-size="26" fill="${shineColor}" fill-opacity="0.8">${label}</text>
-  ${variant === 'after' ? `<circle cx="1100" cy="80" r="34" fill="${shineColor}" fill-opacity="0.18"/><text x="1100" y="90" font-family="Georgia,serif" font-size="22" fill="${shineColor}" text-anchor="middle" dominant-baseline="middle">✦</text>` : ''}
-</svg>`)}`
-}
 
 const heroSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1000" preserveAspectRatio="xMidYMid slice">
   <defs>
@@ -440,14 +397,15 @@ const heroSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http:
 
 export const heroImage = heroSvg
 
-import beforeFloormat from '@/assets/uploads/before-car-floormat-1775276097045-xmc37g.png'
-import afterFloormat from '@/assets/uploads/after-car-floormat-1775276096878-2l1o5h.png'
-import beforeM3 from '@/assets/uploads/before-m3-1775276101713-evrjaa.png'
-import afterM3 from '@/assets/uploads/after-m3-1775276101546-6y5yfl.png'
-import beforeBoat from '@/assets/uploads/before-boat-1775276300627-dka6qd.png'
-import afterBoat from '@/assets/uploads/after-boat-1775276300475-amftqa.png'
-import beforeImg9639 from '@/assets/uploads/IMG_9639-1775610662754-4wm4h7.png'
-import afterImg9640 from '@/assets/uploads/IMG_9640-1775610662782-qg0knb.jpg'
+const CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
+const beforeFloormat = `${CDN}/before-car-floormat-1775276097045-xmc37g.png`
+const afterFloormat = `${CDN}/after-car-floormat-1775276096878-2l1o5h.png`
+const beforeM3 = `${CDN}/before-m3-1775276101713-evrjaa.png`
+const afterM3 = `${CDN}/after-m3-1775276101546-6y5yfl.png`
+const beforeBoat = `${CDN}/before-boat-1775276300627-dka6qd.png`
+const afterBoat = `${CDN}/after-boat-1775276300475-amftqa.png`
+const beforeImg9639 = `${CDN}/IMG_9639-1775610662754-4wm4h7.png`
+const afterImg9640 = `${CDN}/IMG_9640-1775610662782-qg0knb.jpg`
 
 export const beforeAfterExamples: BeforeAfterExample[] = [
   {

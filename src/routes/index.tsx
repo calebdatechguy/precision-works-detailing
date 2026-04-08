@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import aboutPhoto from '../assets/uploads/aboutme-1775611446208-hznwv5.jpg'
+const aboutPhoto = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works/aboutme-1775611446208-hznwv5.jpg'
 import logoImg from '../assets/logo.png'
 
 type PackageTier = {

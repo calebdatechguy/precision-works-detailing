@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import heroPhoto from '../assets/uploads/DSC09921-3-1774028142844-e99jgz.jpg'
-import aboutPhoto from '../assets/uploads/aboutme-1775611446208-hznwv5.jpg'
-import photo1 from '../assets/uploads/DSC01342-2-1774028142629-ratb33.jpg'
-import photo2 from '../assets/uploads/DSC01359-1774028142651-i3rbqp.jpg'
-import photo3 from '../assets/uploads/DSC01336-1774028142610-hr6ipf.jpg'
-import photo4 from '../assets/uploads/DSC09999-7-1774028142977-8597e4.jpg'
-import photo5 from '../assets/uploads/DSC09966-3-1774028142928-yech3r.jpg'
-import photo6 from '../assets/uploads/DSC09949-2-1774028142904-52o4kk.jpg'
+const _CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
+const heroPhoto = `${_CDN}/DSC09921-3-1774028142844-e99jgz.jpg`
+const aboutPhoto = `${_CDN}/aboutme-1775611446208-hznwv5.jpg`
+const photo1 = `${_CDN}/DSC01342-2-1774028142629-ratb33.jpg`
+const photo2 = `${_CDN}/DSC01359-1774028142651-i3rbqp.jpg`
+const photo3 = `${_CDN}/DSC01336-1774028142610-hr6ipf.jpg`
+const photo4 = `${_CDN}/DSC09999-7-1774028142977-8597e4.jpg`
+const photo5 = `${_CDN}/DSC09966-3-1774028142928-yech3r.jpg`
+const photo6 = `${_CDN}/DSC09949-2-1774028142904-52o4kk.jpg`
 import {
   addOns,
   boatAddOns,
@@ -23,7 +24,7 @@ import { BeforeAfterCard } from '../components/home/BeforeAfterCard'
 import { beforeAfterExamples } from '../components/home/data'
 import { BookingModal } from '../components/home/BookingModal'
 import { Star, ThumbsUp, Layers, ShieldCheck } from 'lucide-react'
-import logoImg from '../assets/uploads/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp'
+const logoImg = `${_CDN}/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp`
 
 // Doubled reviews array for seamless infinite scroll
 const reviewsLoop = [...reviews, ...reviews]
