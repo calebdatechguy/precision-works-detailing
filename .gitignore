@@ -1,0 +1,10 @@
+node_modules
+dist
+.vite
+
+# Backend
+backend/.env
+backend/drizzle/
+
+# Uploaded images (screenshots, drag-and-drop)
+src/assets/uploads/
