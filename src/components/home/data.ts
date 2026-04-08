@@ -397,14 +397,15 @@ const heroSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http:
 
 export const heroImage = heroSvg
 
-import beforeFloormat from '@/assets/uploads/before-car-floormat-1775276097045-xmc37g.png'
-import afterFloormat from '@/assets/uploads/after-car-floormat-1775276096878-2l1o5h.png'
-import beforeM3 from '@/assets/uploads/before-m3-1775276101713-evrjaa.png'
-import afterM3 from '@/assets/uploads/after-m3-1775276101546-6y5yfl.png'
-import beforeBoat from '@/assets/uploads/before-boat-1775276300627-dka6qd.png'
-import afterBoat from '@/assets/uploads/after-boat-1775276300475-amftqa.png'
-import beforeImg9639 from '@/assets/uploads/IMG_9639-1775610662754-4wm4h7.png'
-import afterImg9640 from '@/assets/uploads/IMG_9640-1775610662782-qg0knb.jpg'
+const CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
+const beforeFloormat = `${CDN}/before-car-floormat-1775276097045-xmc37g.png`
+const afterFloormat = `${CDN}/after-car-floormat-1775276096878-2l1o5h.png`
+const beforeM3 = `${CDN}/before-m3-1775276101713-evrjaa.png`
+const afterM3 = `${CDN}/after-m3-1775276101546-6y5yfl.png`
+const beforeBoat = `${CDN}/before-boat-1775276300627-dka6qd.png`
+const afterBoat = `${CDN}/after-boat-1775276300475-amftqa.png`
+const beforeImg9639 = `${CDN}/IMG_9639-1775610662754-4wm4h7.png`
+const afterImg9640 = `${CDN}/IMG_9640-1775610662782-qg0knb.jpg`
 
 export const beforeAfterExamples: BeforeAfterExample[] = [
   {

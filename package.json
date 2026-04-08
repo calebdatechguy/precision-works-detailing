@@ -10,13 +10,6 @@
     "start": "bunx serve dist"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.0.0",
-    "class-variance-authority": "^0.7.1",
-    "lucide-react": "^0.468.0",
-    "@tanstack/react-router": "^1.120.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
@@ -40,7 +33,16 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-toggle": "^1.1.1",
     "@radix-ui/react-toggle-group": "^1.1.1",
-    "@radix-ui/react-tooltip": "^1.1.6"
+    "@radix-ui/react-tooltip": "^1.1.6",
+    "@tanstack/react-router": "^1.120.0",
+    "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.9.0",
+    "clsx": "^2.1.1",
+    "form-data": "^4.0.5",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

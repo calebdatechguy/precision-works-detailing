@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import aboutPhoto from '../assets/uploads/aboutme-1775611446208-hznwv5.jpg'
-import photo1 from '../assets/uploads/DSC09921-3-1774028142844-e99jgz.jpg'
-import photo2 from '../assets/uploads/DSC09949-2-1774028142904-52o4kk.jpg'
-import photo3 from '../assets/uploads/DSC09966-3-1774028142928-yech3r.jpg'
-import logoImg from '../assets/uploads/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp'
+const _CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
+const aboutPhoto = `${_CDN}/aboutme-1775611446208-hznwv5.jpg`
+const photo1 = `${_CDN}/DSC09921-3-1774028142844-e99jgz.jpg`
+const photo2 = `${_CDN}/DSC09949-2-1774028142904-52o4kk.jpg`
+const photo3 = `${_CDN}/DSC09966-3-1774028142928-yech3r.jpg`
+const logoImg = `${_CDN}/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp`
 
 const values = [
   {
