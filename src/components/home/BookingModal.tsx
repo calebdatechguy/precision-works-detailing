@@ -54,7 +54,7 @@ export function BookingModal({
     setError(null)
 
     try {
-      const apiBase = import.meta.env.VITE_API_URL ?? ''
+      const apiBase = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
       const res = await fetch(`${apiBase}/api/ghl/create-appointment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
