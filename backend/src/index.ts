@@ -5,13 +5,9 @@ import ghlRoute from './routes/ghl'
 const app = new Hono()
 
 app.use('/*', cors({
-  origin: [
-    'https://precisionworks-frontend-production.up.railway.app',
-    'http://localhost:5173',
-  ],
+  origin: '*',
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
 }))
 
 app.get('/health', (c) => {
