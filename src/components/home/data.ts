@@ -9,7 +9,7 @@ export type PackageTier = {
   includes: string[]
   featured?: boolean
   icon: string
-  bookingUrl: string
+  bookingUrl?: string
   bookingUrlSuvTruck?: string
 }
 
@@ -339,7 +339,7 @@ export const reviews: Review[] = [
   },
 ]
 
-function makeBg(label: string, variant: 'before' | 'after') {
+function _makeBg(label: string, variant: 'before' | 'after') {
   const bg = variant === 'before' ? '#2C323C' : '#0C2A52'
   const bodyFill = variant === 'before' ? '#4A5568' : '#1E3A6E'
   const shineColor = variant === 'before' ? '#8899AA' : '#5BAEFF'
