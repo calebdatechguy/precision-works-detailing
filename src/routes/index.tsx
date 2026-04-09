@@ -50,7 +50,7 @@ const navLinks = [
   { id: 'contact', label: 'Contact' },
 ]
 
-const trustPills = ['5.0 ★ Google Rating', '32+ Five-Star Reviews', 'Fully Mobile — No Drop-Off']
+const trustPills = ['5.0 ★ Google Rating', '83+ Five-Star Reviews', 'Fully Mobile — No Drop-Off']
 
 const vehicleTypes = [
   { id: 'sedan', label: 'Sedan / Coupe' },

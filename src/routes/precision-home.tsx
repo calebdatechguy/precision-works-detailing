@@ -222,7 +222,7 @@ export function PrecisionHomePage() {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="#F9C940" aria-hidden="true">
                     <path d="M12 2.75L14.82 8.47L21.14 9.39L16.57 13.85L17.65 20.14L12 17.17L6.35 20.14L7.43 13.85L2.86 9.39L9.18 8.47L12 2.75Z"/>
                   </svg>
-                  32+ Verified Reviews
+                  83+ Verified Reviews
                 </span>
                 {/* Self-Sufficient */}
                 <span className="flex items-center gap-1.5 text-[12px] font-semibold text-white/70">
@@ -241,7 +241,7 @@ export function PrecisionHomePage() {
           <div className="section-shell grid grid-cols-2 divide-x divide-white/10 py-5 text-center text-white md:grid-cols-4">
             {[
               { label: '5.0', sub: 'Google Rating', icon: <Star className="size-5 text-yellow-400 fill-yellow-400" /> },
-              { label: '32+', sub: 'Five-Star Reviews', icon: <ThumbsUp className="size-5 text-blue-300" /> },
+              { label: '83+', sub: 'Five-Star Reviews', icon: <ThumbsUp className="size-5 text-blue-300" /> },
               { label: '5+ Years', sub: 'Of Experience', icon: <Layers className="size-5 text-emerald-300" /> },
               { label: '100%', sub: 'Satisfaction Guarantee', icon: <ShieldCheck className="size-5 text-indigo-300" /> },
             ].map((s) => (

@@ -130,7 +130,7 @@ export function AboutPage() {
                   <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-[#1a1a1a]/70">Years Detailing</p>
                 </div>
                 <div className="absolute -right-4 -top-4 rounded-2xl bg-[var(--color-navy)] border border-white/10 px-5 py-4 shadow-xl">
-                  <p className="text-[28px] font-bold leading-none text-white">32+</p>
+                  <p className="text-[28px] font-bold leading-none text-white">83+</p>
                   <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-white/50">5-Star Reviews</p>
                 </div>
               </div>
