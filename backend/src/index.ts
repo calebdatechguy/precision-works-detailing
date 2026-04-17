@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import ghlRoute from './routes/ghl'
+import emailRoute from './routes/email'
 
 const app = new Hono()
 
@@ -16,6 +17,9 @@ app.get('/health', (c) => {
 
 // GHL booking + payments
 app.route('/api/ghl', ghlRoute)
+
+// Contact & fleet form emails
+app.route('/api/email', emailRoute)
 
 // Add your API routes here
 // Example:

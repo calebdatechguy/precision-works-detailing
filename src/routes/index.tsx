@@ -432,13 +432,14 @@ function BeforeAfterCard({ title, beforeAlt, afterAlt }: BeforeAfterExample) {
 export function HomePage() {
   const [heroReady, setHeroReady] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedVehicle, setSelectedVehicle] = useState(vehicleTypes[0].id)
   const [selectedPackage, setSelectedPackage] = useState(detailPackages[2].id)
   const [selectedExtras, setSelectedExtras] = useState<string[]>([])
   const [expandedReviews, setExpandedReviews] = useState<string[]>([])
   const [summaryFlash, setSummaryFlash] = useState(false)
   const [serviceTab, setServiceTab] = useState<'auto' | 'boat'>('auto')
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [fleetStatus, setFleetStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const packageSelection = useMemo(
     () => detailPackages.find((detailPackage) => detailPackage.id === selectedPackage) ?? detailPackages[0],
@@ -531,13 +532,64 @@ export function HomePage() {
     )
   }
 
+  const apiBase = (import.meta.env.VITE_API_URL ?? 'http://localhost:4000').replace(/\/$/, '')
+
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setContactStatus('loading')
+    const fd = new FormData(e.currentTarget)
+    try {
+      const res = await fetch(`${apiBase}/api/email/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fd.get('name'),
+          email: fd.get('email'),
+          phone: fd.get('phone'),
+          vehicle: fd.get('vehicle'),
+          message: fd.get('message'),
+        }),
+      })
+      if (!res.ok) throw new Error('send failed')
+      setContactStatus('success')
+      ;(e.target as HTMLFormElement).reset()
+    } catch {
+      setContactStatus('error')
+    }
+  }
+
+  const handleFleetSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setFleetStatus('loading')
+    const fd = new FormData(e.currentTarget)
+    try {
+      const res = await fetch(`${apiBase}/api/email/fleet`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: fd.get('businessName'),
+          contactName: fd.get('contactName'),
+          email: fd.get('email'),
+          phone: fd.get('phone'),
+          fleetSize: fd.get('fleetSize'),
+          message: fd.get('message'),
+        }),
+      })
+      if (!res.ok) throw new Error('send failed')
+      setFleetStatus('success')
+      ;(e.target as HTMLFormElement).reset()
+    } catch {
+      setFleetStatus('error')
+    }
+  }
+
   return (
     <div id="top" className="bg-[var(--color-ivory)] text-[var(--color-text)]">
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-[300ms] [transition-timing-function:var(--ease-in-out)] ${
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-[300ms] [transition-timing-function:var(--ease-in-out)] bg-transparent ${
           isScrolled
             ? 'bg-[var(--color-charcoal)] shadow-[0_1px_0_rgba(255,255,255,0.06)]'
-            : 'bg-transparent'
+            : ''
         }`}
       >
         <div className="section-shell flex h-14 items-center justify-between md:h-16">
@@ -567,37 +619,6 @@ export function HomePage() {
             Book Now
           </a>
 
-          <button
-            type="button"
-            className="btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-white md:hidden"
-            aria-label="Toggle mobile menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-          >
-            <span className="text-lg leading-none">☰</span>
-          </button>
-        </div>
-
-        <div
-          className={`fixed inset-x-0 top-14 z-40 border-b border-white/10 bg-[var(--color-charcoal)] md:hidden transition-transform duration-[400ms] [transition-timing-function:var(--ease-out)] ${
-            mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
-          }`}
-        >
-          <nav aria-label="Mobile navigation" className="section-shell flex flex-col gap-3 py-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                className="text-sm text-white/85"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-            <a href="#contact" className="btn mt-2 inline-flex justify-center rounded-full bg-[var(--color-blue)] px-6 py-2 text-sm text-white">
-              Book Now
-            </a>
-          </nav>
         </div>
       </header>
 
@@ -1032,58 +1053,81 @@ export function HomePage() {
               </div>
             </div>
 
-            <form className="reveal card-surface bg-white p-6 text-[var(--color-text)]" style={{ transitionDelay: '100ms' }}>
-              <h3 className="text-[20px] text-[var(--color-navy)]">Request Fleet Pricing</h3>
-              <p className="mt-2 text-[14px] text-[var(--color-text)]">
-                Tell us about your mobile auto detailing needs and we will send a tailored plan.
-              </p>
-              <div className="mt-5 space-y-4">
-                <div>
-                  <label htmlFor="fleet-business" className="form-label">
-                    Business Name
-                  </label>
-                  <input id="fleet-business" name="businessName" type="text" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="fleet-contact" className="form-label">
-                    Contact Name
-                  </label>
-                  <input id="fleet-contact" name="contactName" type="text" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="fleet-email" className="form-label">
-                    Email
-                  </label>
-                  <input id="fleet-email" name="email" type="email" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="fleet-phone" className="form-label">
-                    Phone
-                  </label>
-                  <input id="fleet-phone" name="phone" type="tel" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="fleet-size" className="form-label">
-                    Number of Vehicles
-                  </label>
-                  <select id="fleet-size" name="fleetSize" className="form-input">
-                    <option>1-4 vehicles</option>
-                    <option>5-14 vehicles</option>
-                    <option>15-29 vehicles</option>
-                    <option>30+ vehicles</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="fleet-message" className="form-label">
-                    Message
-                  </label>
-                  <textarea id="fleet-message" name="message" rows={4} className="form-input" />
-                </div>
+            {fleetStatus === 'success' ? (
+              <div className="reveal card-surface bg-white p-10 text-center text-[var(--color-text)] visible">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 text-2xl">✓</div>
+                <h3 className="font-display text-[22px] italic text-[var(--color-navy)]">Fleet request sent!</h3>
+                <p className="mt-2 text-[15px] leading-[1.6] text-[var(--color-muted)]">We'll follow up with a custom fleet plan within one business day.</p>
+                <button
+                  onClick={() => setFleetStatus('idle')}
+                  className="btn mt-6 inline-flex rounded-full border border-[rgba(0,0,0,0.15)] px-6 py-2 text-[13px] text-[var(--color-muted)]"
+                >
+                  Submit another request
+                </button>
               </div>
-              <button type="submit" className="btn mt-5 inline-flex w-full justify-center rounded-full bg-[var(--color-gold)] px-6 py-3 text-[14px] tracking-[0.04em] text-[var(--color-charcoal)]">
-                Send Fleet Request
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleFleetSubmit} className="reveal card-surface bg-white p-6 text-[var(--color-text)]" style={{ transitionDelay: '100ms' }}>
+                <h3 className="text-[20px] text-[var(--color-navy)]">Request Fleet Pricing</h3>
+                <p className="mt-2 text-[14px] text-[var(--color-text)]">
+                  Tell us about your mobile auto detailing needs and we will send a tailored plan.
+                </p>
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label htmlFor="fleet-business" className="form-label">
+                      Business Name
+                    </label>
+                    <input id="fleet-business" name="businessName" type="text" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="fleet-contact" className="form-label">
+                      Contact Name
+                    </label>
+                    <input id="fleet-contact" name="contactName" type="text" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="fleet-email" className="form-label">
+                      Email
+                    </label>
+                    <input id="fleet-email" name="email" type="email" required className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="fleet-phone" className="form-label">
+                      Phone
+                    </label>
+                    <input id="fleet-phone" name="phone" type="tel" required className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="fleet-size" className="form-label">
+                      Number of Vehicles
+                    </label>
+                    <select id="fleet-size" name="fleetSize" className="form-input">
+                      <option>1-4 vehicles</option>
+                      <option>5-14 vehicles</option>
+                      <option>15-29 vehicles</option>
+                      <option>30+ vehicles</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="fleet-message" className="form-label">
+                      Message
+                    </label>
+                    <textarea id="fleet-message" name="message" rows={4} className="form-input" />
+                  </div>
+                </div>
+                {fleetStatus === 'error' && (
+                  <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-[14px] text-red-700">
+                    Something went wrong. Please try again or call us directly.
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={fleetStatus === 'loading'}
+                  className="btn mt-5 inline-flex w-full justify-center rounded-full bg-[var(--color-gold)] px-6 py-3 text-[14px] tracking-[0.04em] text-[var(--color-charcoal)] disabled:opacity-60"
+                >
+                  {fleetStatus === 'loading' ? 'Sending…' : 'Send Fleet Request'}
+                </button>
+              </form>
+            )}
           </div>
         </section>
 
@@ -1243,49 +1287,72 @@ export function HomePage() {
               Questions about a package, need a quote, or ready to book mobile detailing service? We typically respond within a few hours.
             </p>
 
-            <form className="reveal mx-auto mt-10 max-w-[560px] card-surface p-6" style={{ transitionDelay: '140ms' }}>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="contact-name" className="form-label">
-                    Name
-                  </label>
-                  <input id="contact-name" name="name" type="text" autoComplete="name" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="contact-email" className="form-label">
-                    Email
-                  </label>
-                  <input id="contact-email" name="email" type="email" autoComplete="email" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="contact-phone" className="form-label">
-                    Phone
-                  </label>
-                  <input id="contact-phone" name="phone" type="tel" autoComplete="tel" className="form-input" />
-                </div>
-                <div>
-                  <label htmlFor="contact-vehicle" className="form-label">
-                    Vehicle
-                  </label>
-                  <input
-                    id="contact-vehicle"
-                    name="vehicle"
-                    type="text"
-                    placeholder="What are we detailing? — optional"
-                    className="form-input"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-message" className="form-label">
-                    Message
-                  </label>
-                  <textarea id="contact-message" name="message" rows={4} className="form-input" />
-                </div>
+            {contactStatus === 'success' ? (
+              <div className="reveal mx-auto mt-10 max-w-[560px] card-surface p-10 text-center visible">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 text-2xl">✓</div>
+                <h3 className="font-display text-[22px] italic text-[var(--color-navy)]">Message sent!</h3>
+                <p className="mt-2 text-[15px] leading-[1.6] text-[var(--color-muted)]">We typically respond within a few hours. Talk soon.</p>
+                <button
+                  onClick={() => setContactStatus('idle')}
+                  className="btn mt-6 inline-flex rounded-full border border-[rgba(0,0,0,0.15)] px-6 py-2 text-[13px] text-[var(--color-muted)]"
+                >
+                  Send another message
+                </button>
               </div>
-              <button type="submit" className="btn mt-5 inline-flex w-full justify-center rounded-full bg-[var(--color-charcoal)] px-6 py-3 text-[14px] tracking-[0.04em] text-white">
-                Send Message
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleContactSubmit} className="reveal mx-auto mt-10 max-w-[560px] card-surface p-6" style={{ transitionDelay: '140ms' }}>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="contact-name" className="form-label">
+                      Name
+                    </label>
+                    <input id="contact-name" name="name" type="text" autoComplete="name" required className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-email" className="form-label">
+                      Email
+                    </label>
+                    <input id="contact-email" name="email" type="email" autoComplete="email" required className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-phone" className="form-label">
+                      Phone
+                    </label>
+                    <input id="contact-phone" name="phone" type="tel" autoComplete="tel" required className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-vehicle" className="form-label">
+                      Vehicle
+                    </label>
+                    <input
+                      id="contact-vehicle"
+                      name="vehicle"
+                      type="text"
+                      placeholder="What are we detailing? — optional"
+                      className="form-input"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-message" className="form-label">
+                      Message
+                    </label>
+                    <textarea id="contact-message" name="message" rows={4} className="form-input" />
+                  </div>
+                </div>
+                {contactStatus === 'error' && (
+                  <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-[14px] text-red-700">
+                    Something went wrong. Please try again or email us directly.
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={contactStatus === 'loading'}
+                  className="btn mt-5 inline-flex w-full justify-center rounded-full bg-[var(--color-charcoal)] px-6 py-3 text-[14px] tracking-[0.04em] text-white disabled:opacity-60"
+                >
+                  {contactStatus === 'loading' ? 'Sending…' : 'Send Message'}
+                </button>
+              </form>
+            )}
 
             <ul className="reveal mt-6 flex flex-wrap items-center justify-center gap-3 text-center" style={{ transitionDelay: '220ms' }}>
               <li className="rounded-full border border-[rgba(0,0,0,0.12)] px-4 py-2 text-[13px]">We bring our own water & power</li>
@@ -1350,7 +1417,7 @@ export function HomePage() {
             <div className="mt-4 space-y-2 text-[14px] text-white/80">
               <p>Phone: +1 (678) 677-6673</p>
               <p>Email: info@precisionworksdetailing.com</p>
-              <p>Service Area: Bethlehem, Georgia</p>
+              <p>Service Area: Serving Northeast Georgia</p>
               <p>Hours: Mon-Sat 8:00 AM - 6:00 PM</p>
             </div>
           </div>

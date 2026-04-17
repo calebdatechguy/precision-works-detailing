@@ -32,7 +32,6 @@ const reviewsLoop = [...reviews, ...reviews]
 export function PrecisionHomePage() {
   const [heroReady, setHeroReady] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Progressive build state: which step is unlocked
   const [buildStep, setBuildStep] = useState<0 | 1 | 2>(0)
@@ -150,23 +149,6 @@ export function PrecisionHomePage() {
             Book Now
           </a>
 
-          <button type="button" className="btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white md:hidden" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((o) => !o)}>
-            <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
-              <rect width="15" height="2" rx="1" fill="currentColor" />
-              <rect y="4.5" width="15" height="2" rx="1" fill="currentColor" />
-              <rect y="9" width="15" height="2" rx="1" fill="currentColor" />
-            </svg>
-          </button>
-        </div>
-
-        <div className={`fixed inset-x-0 top-16 z-40 border-b border-white/10 bg-[#0a1628] md:hidden transition-transform duration-300 ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
-          <nav aria-label="Mobile navigation" className="section-shell flex flex-col gap-4 py-5">
-            {navLinks.map((link) => (
-              <a key={link.id} href={`#${link.id}`} className="text-[15px] font-semibold text-white/85" onClick={() => setMobileMenuOpen(false)}>{link.label}</a>
-            ))}
-            <Link to="/about" className="text-[15px] font-semibold text-white/85" onClick={() => setMobileMenuOpen(false)}>About</Link>
-            <a href="#contact" className="btn mt-2 inline-flex justify-center rounded-full bg-white px-6 py-3 text-sm font-bold text-[var(--color-navy)]">Book Now</a>
-          </nav>
         </div>
       </header>
 
@@ -660,7 +642,7 @@ export function PrecisionHomePage() {
             <div className="reveal flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="eyebrow">What Customers Say</p>
-                <h2 className="mt-3 font-display text-[42px] font-bold leading-tight text-[var(--color-navy)]">82 five-star reviews.</h2>
+                <h2 className="mt-3 font-display text-[42px] font-bold leading-tight text-[var(--color-navy)]">83+ five-star reviews.</h2>
               </div>
               <div className="flex items-center gap-2">
                 {/* Google Stars */}
@@ -925,7 +907,7 @@ export function PrecisionHomePage() {
             <div className="mt-4 space-y-2 text-[14px] text-white/60">
               <p>+1 (678) 677-6673</p>
               <p>info@precisionworksdetailing.com</p>
-              <p>Bethlehem, Georgia</p>
+              <p>Serving Northeast Georgia</p>
               <p>Mon–Sat 8 AM – 6 PM</p>
             </div>
           </div>

@@ -271,7 +271,7 @@ export function AboutPage() {
             <div className="mt-4 space-y-2 text-[14px] text-white/60">
               <p>+1 (678) 677-6673</p>
               <p>info@precisionworksdetailing.com</p>
-              <p>Bethlehem, Georgia</p>
+              <p>Serving Northeast Georgia</p>
               <p>Mon–Sat 8 AM – 6 PM</p>
             </div>
           </div>
