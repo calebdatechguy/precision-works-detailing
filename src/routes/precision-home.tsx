@@ -129,9 +129,9 @@ export function PrecisionHomePage() {
 
       {/* ─── Header ─── */}
       <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0a1628]/95 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.07)]' : 'bg-transparent'}`}>
-        <div className="section-shell flex h-16 items-center justify-between">
-          <a href="#top" aria-label="Precision Works Detailing home" className="flex items-center">
-            <img src={logoImg} alt="Precision Works Detailing" className="h-7 w-auto" />
+        <div className="section-shell relative flex h-16 items-center justify-between">
+          <a href="#top" aria-label="Precision Works Detailing home" className="absolute left-1/2 -translate-x-1/2 flex items-center md:static md:translate-x-0">
+            <img src={logoImg} alt="Precision Works Detailing" className="h-6 w-auto md:h-7" />
           </a>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
@@ -804,7 +804,7 @@ export function PrecisionHomePage() {
                   {[
                     { icon: '⚡', label: 'Self-sufficient — own water & generator' },
                     { icon: '🛡️', label: 'Fully insured & 100% satisfaction guaranteed' },
-                    { icon: '⭐', label: '32+ five-star Google reviews' },
+                    { icon: '⭐', label: '83+ five-star Google reviews' },
                   ].map((item) => (
                     <li key={item.label} className="flex items-center gap-3 text-[15px] text-[var(--color-text)]">
                       <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[rgba(26,42,76,0.07)] text-base">{item.icon}</span>

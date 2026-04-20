@@ -592,14 +592,14 @@ export function HomePage() {
             : ''
         }`}
       >
-        <div className="section-shell flex h-14 items-center justify-between md:h-16">
-          <a href="#top" aria-label="Precision Works Detailing home" className="inline-flex items-center">
+        <div className="section-shell relative flex h-14 items-center justify-between md:h-16">
+          <a href="#top" aria-label="Precision Works Detailing home" className="absolute left-1/2 -translate-x-1/2 inline-flex items-center md:static md:translate-x-0">
             <img
               src={logoImg}
               alt="Precision Works Detailing"
-              width={140}
-              height={48}
-              className="h-10 w-auto object-contain"
+              width={120}
+              height={40}
+              className="h-7 w-auto object-contain md:h-10"
             />
           </a>
 
@@ -1142,7 +1142,7 @@ export function HomePage() {
                 <p className="text-[13px] text-[var(--color-muted)]">Google Rating</p>
               </div>
               <div>
-                <p className="font-display text-[48px] italic text-[var(--color-navy)]">32+</p>
+                <p className="font-display text-[48px] italic text-[var(--color-navy)]">83+</p>
                 <p className="text-[13px] text-[var(--color-muted)]">Verified Reviews</p>
               </div>
               <div>

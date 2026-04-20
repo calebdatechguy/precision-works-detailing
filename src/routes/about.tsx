@@ -50,9 +50,9 @@ export function AboutPage() {
 
       {/* ─── Header (same style as home) ─── */}
       <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0a1628]/95 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.07)]' : 'bg-[#0a1628]'}`}>
-        <div className="section-shell flex h-16 items-center justify-between">
-          <Link to="/" aria-label="Precision Works Detailing home" className="flex items-center">
-            <img src={logoImg} alt="Precision Works Detailing" className="h-7 w-auto" />
+        <div className="section-shell relative flex h-16 items-center justify-between">
+          <Link to="/" aria-label="Precision Works Detailing home" className="absolute left-1/2 -translate-x-1/2 flex items-center md:static md:translate-x-0">
+            <img src={logoImg} alt="Precision Works Detailing" className="h-6 w-auto md:h-7" />
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
@@ -214,7 +214,7 @@ export function AboutPage() {
             <div className="reveal grid grid-cols-2 gap-8 md:grid-cols-4">
               {[
                 { stat: '5.0', label: 'Google Rating' },
-                { stat: '32+', label: 'Five-Star Reviews' },
+                { stat: '83+', label: 'Five-Star Reviews' },
                 { stat: '2+', label: 'Years Detailing' },
                 { stat: '100%', label: 'Satisfaction Guaranteed' },
               ].map((item) => (
