@@ -24,7 +24,6 @@ const values = [
 
 export function AboutPage() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 60)
@@ -65,28 +64,6 @@ export function AboutPage() {
             Book Now
           </Link>
 
-          <button
-            type="button"
-            className="btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white md:hidden"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((o) => !o)}
-          >
-            <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
-              <rect width="15" height="2" rx="1" fill="currentColor" />
-              <rect y="4.5" width="15" height="2" rx="1" fill="currentColor" />
-              <rect y="9" width="15" height="2" rx="1" fill="currentColor" />
-            </svg>
-          </button>
-        </div>
-
-        <div className={`fixed inset-x-0 top-16 z-40 border-b border-white/10 bg-[#0a1628] md:hidden transition-transform duration-300 ${mobileMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}>
-          <nav aria-label="Mobile navigation" className="section-shell flex flex-col gap-4 py-5">
-            <Link to="/" className="text-[15px] font-semibold text-white/85" onClick={() => setMobileMenuOpen(false)}>Services</Link>
-            <Link to="/" className="text-[15px] font-semibold text-white/85" onClick={() => setMobileMenuOpen(false)}>Results</Link>
-            <Link to="/about" className="text-[15px] font-semibold text-white" onClick={() => setMobileMenuOpen(false)}>About</Link>
-            <Link to="/" className="btn mt-2 inline-flex justify-center rounded-full bg-white px-6 py-3 text-sm font-bold text-[var(--color-navy)]">Book Now</Link>
-          </nav>
         </div>
       </header>
 
