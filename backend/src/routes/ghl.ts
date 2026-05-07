@@ -61,6 +61,35 @@ function buildEndTime(date: string, timePreference: string): string {
 
 const app = new Hono()
 
+// ── Check calendar availability for a given date ─────────────────────────────
+app.get('/check-availability', async (c) => {
+  const packageId  = c.req.query('packageId')
+  const vehicleType = c.req.query('vehicleType') ?? null
+  const date       = c.req.query('date') // YYYY-MM-DD
+
+  if (!packageId || !date) return c.json({ error: 'Missing params' }, 400)
+
+  const pkgKey     = packageId === 'platinum' ? platinumKey(vehicleType) : packageId
+  const calendarId = CALENDAR_MAP[pkgKey]
+  if (!calendarId) return c.json({ error: 'Unknown package' }, 400)
+
+  try {
+    const startMs = new Date(`${date}T00:00:00`).getTime()
+    const endMs   = new Date(`${date}T23:59:59`).getTime()
+
+    const res = await fetch(
+      `${GHL_BASE}/calendars/${calendarId}/free-slots?startDate=${startMs}&endDate=${endMs}&timezone=America%2FNew_York`,
+      { headers: ghlHeaders('2021-07-28') },
+    )
+    const data = await res.json() as Record<string, { slots: string[] }>
+    const slots = data[date]?.slots ?? []
+    return c.json({ available: slots.length > 0 })
+  } catch (err) {
+    console.error('GHL check-availability error:', err)
+    return c.json({ available: true }) // fail open so users aren't blocked by an API hiccup
+  }
+})
+
 app.post('/create-appointment', async (c) => {
   try {
     const body = await c.req.json<{
@@ -83,6 +112,18 @@ app.post('/create-appointment', async (c) => {
     const calendarId = CALENDAR_MAP[pkgKey]
     if (!calendarId) {
       return c.json({ error: `Unknown package: ${packageId}` }, 400)
+    }
+
+    // ── 1b. Verify date availability ─────────────────────────────────────────
+    const startMs = new Date(`${date}T00:00:00`).getTime()
+    const endMs   = new Date(`${date}T23:59:59`).getTime()
+    const slotsRes = await fetch(
+      `${GHL_BASE}/calendars/${calendarId}/free-slots?startDate=${startMs}&endDate=${endMs}&timezone=America%2FNew_York`,
+      { headers: ghlHeaders('2021-07-28') },
+    )
+    const slotsData = await slotsRes.json() as Record<string, { slots: string[] }>
+    if (!slotsData[date]?.slots?.length) {
+      return c.json({ error: 'That date is not available. Please choose a different date.' }, 409)
     }
 
     // ── 2. Upsert GHL contact ─────────────────────────────────────────────────
@@ -149,7 +190,7 @@ app.post('/create-appointment', async (c) => {
       startTime,
       endTime,
       title: `${name} — ${PACKAGE_NAMES[pkgKey]?.split(' — ')[0] ?? pkgKey}`,
-      notes: appointmentNotes,
+      description: appointmentNotes,
       ignoreDateRange: true,
       ignoreFreeSlotValidation: true,
       toNotify: true,

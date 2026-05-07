@@ -34,6 +34,8 @@ export function BookingModal({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const [dateUnavailable, setDateUnavailable] = useState(false)
+  const [checkingDate, setCheckingDate] = useState(false)
 
   // Minimum date = tomorrow
   const tomorrow = new Date()
@@ -44,7 +46,26 @@ export function BookingModal({
     if (loading) return
     setDone(false)
     setError(null)
+    setDateUnavailable(false)
     onClose()
+  }
+
+  const checkDateAvailability = async (selectedDate: string) => {
+    if (!packageId || !selectedDate) return
+    setCheckingDate(true)
+    setDateUnavailable(false)
+    try {
+      const apiBase = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+      const params = new URLSearchParams({ packageId, date: selectedDate })
+      if (vehicleType) params.set('vehicleType', vehicleType)
+      const res = await fetch(`${apiBase}/api/ghl/check-availability?${params}`)
+      const data = await res.json() as { available?: boolean }
+      setDateUnavailable(data.available === false)
+    } catch {
+      // Fail open — server-side guard will catch it on submit
+    } finally {
+      setCheckingDate(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -200,9 +221,22 @@ export function BookingModal({
                     required
                     min={minDate}
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    onChange={(e) => { setDate(e.target.value); void checkDateAvailability(e.target.value) }}
                     className="form-input"
                   />
+                  {checkingDate && (
+                    <p className="mt-1 text-[12px] text-[var(--color-muted)]">Checking availability…</p>
+                  )}
+                  {!checkingDate && date && dateUnavailable && (
+                    <p className="mt-1 rounded-lg bg-red-50 px-3 py-2 text-[12px] font-medium text-red-600">
+                      ⚠️ That date is not available. Please choose a different date.
+                    </p>
+                  )}
+                  {!checkingDate && date && !dateUnavailable && (
+                    <p className="mt-1 rounded-lg bg-green-50 px-3 py-2 text-[12px] font-medium text-green-700">
+                      ✓ Date available — go ahead and book!
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="form-label">Preferred Arrival Time</label>
@@ -249,7 +283,7 @@ export function BookingModal({
 
               <button
                 type="submit"
-                disabled={loading || !name || !phone || !date}
+                disabled={loading || !name || !phone || !date || dateUnavailable || checkingDate}
                 className="btn mt-1 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-navy)] py-3.5 text-[14px] font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
