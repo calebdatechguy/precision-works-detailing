@@ -1,9 +1,5 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import photo2 from '../assets/uploads/IMG_2130-1786883717578-u5xzp4.jpg'
-import photo4 from '../assets/uploads/DSC04568-1786883724180-mtthrf.jpg'
-import photo5 from '../assets/uploads/DSC04488-1786883730978-emag3w.jpg'
-import photo6 from '../assets/uploads/IMG_1476-1786883738263-bim2rn.jpg'
 import {
   addOns,
   boatAddOns,
@@ -23,7 +19,11 @@ const _CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
 const heroPhoto = `${_CDN}/DSC09921-3-1774028142844-e99jgz.jpg`
 const aboutPhoto = `${_CDN}/aboutme-1775611446208-hznwv5.jpg`
 const photo1 = `${_CDN}/DSC01342-2-1774028142629-ratb33.jpg`
+const photo2 = `${_CDN}/IMG_2130-1786883717578-u5xzp4.jpg`
 const photo3 = `${_CDN}/DSC01336-1774028142610-hr6ipf.jpg`
+const photo4 = `${_CDN}/DSC04568-1786883724180-mtthrf.jpg`
+const photo5 = `${_CDN}/DSC04488-1786883730978-emag3w.jpg`
+const photo6 = `${_CDN}/IMG_1476-1786883738263-bim2rn.jpg`
 const logoImg = `${_CDN}/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp`
 
 // Doubled reviews array for seamless infinite scroll
