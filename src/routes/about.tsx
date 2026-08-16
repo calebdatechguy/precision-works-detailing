@@ -78,7 +78,7 @@ export function AboutPage() {
                   Hey, what's up y'all!
                 </h1>
                 <p className="mt-6 max-w-sm text-[17px] leading-[1.75] text-white/65">
-                  I'm Lucas — a 17-year-old entrepreneur and the founder of Precision Works Detailing.
+                  I'm Lucas — an 18-year-old entrepreneur and the founder of Precision Works Detailing.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link to="/" className="btn inline-flex items-center rounded-full bg-white px-8 py-3.5 text-[14px] font-bold tracking-wide text-[var(--color-navy)]">
@@ -107,7 +107,7 @@ export function AboutPage() {
                   <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-[#1a1a1a]/70">Years Detailing</p>
                 </div>
                 <div className="absolute -right-4 -top-4 rounded-2xl bg-[var(--color-navy)] border border-white/10 px-5 py-4 shadow-xl">
-                  <p className="text-[28px] font-bold leading-none text-white">83+</p>
+                  <p className="text-[28px] font-bold leading-none text-white">100+</p>
                   <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-white/50">5-Star Reviews</p>
                 </div>
               </div>
@@ -191,7 +191,7 @@ export function AboutPage() {
             <div className="reveal grid grid-cols-2 gap-8 md:grid-cols-4">
               {[
                 { stat: '5.0', label: 'Google Rating' },
-                { stat: '83+', label: 'Five-Star Reviews' },
+                { stat: '100+', label: 'Five-Star Reviews' },
                 { stat: '2+', label: 'Years Detailing' },
                 { stat: '100%', label: 'Satisfaction Guaranteed' },
               ].map((item) => (
@@ -247,7 +247,7 @@ export function AboutPage() {
             <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/35">Contact</h3>
             <div className="mt-4 space-y-2 text-[14px] text-white/60">
               <p>+1 (678) 677-6673</p>
-              <p>info@precisionworksdetailing.com</p>
+              <p>lucas@precisionworksdetailing.com</p>
               <p>Serving Northeast Georgia</p>
               <p>Mon–Sat 8 AM – 6 PM</p>
             </div>

@@ -84,8 +84,8 @@ export const detailPackages: PackageTier[] = [
     id: 'silver',
     name: 'Silver Full Detail',
     tier: 'SILVER',
-    price: 179.99,
-    displayPrice: '$179.99',
+    price: 189.99,
+    displayPrice: '$189.99',
     summary: 'A full reset, inside and out. Best value for first-timers.',
     bestFor: 'Parents, rideshare drivers, daily commuters',
     icon: '🥈',
@@ -96,7 +96,6 @@ export const detailPackages: PackageTier[] = [
       'Surface wipe-down — dash, vents, panels',
       'Interior glass cleaned',
       'Drill-brush agitation on carpets & seats',
-      'Trim + steering wheel conditioned',
     ],
   },
   {

@@ -3,50 +3,164 @@ import nodemailer from 'nodemailer'
 
 const emailRoute = new Hono()
 
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465')
+
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false,
+  host: process.env.SMTP_HOST || 'smtp.zoho.com',
+  port: SMTP_PORT,
+  secure: SMTP_PORT === 465,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 })
 
-const TO = process.env.CONTACT_EMAIL || 'calebelliott933@gmail.com'
-const FROM = process.env.SMTP_USER || 'noreply@precisionworksdetailing.com'
+const TO = process.env.CONTACT_EMAIL || 'lucas@precisionworksdetailing.com'
+const FROM = process.env.SMTP_USER || 'lucas@precisionworksdetailing.com'
 
-const logoUrl = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works/logo.png'
+const NAVY = '#0a1628'
+const NAVY_SOFT = '#1a2a4c'
+const GOLD = '#C4A86E'
+const INK = '#111827'
+const MUTED = '#6b7280'
+const LINE = '#e6e2d9'
+const CANVAS = '#f4f2ed'
+const SURFACE = '#ffffff'
 
-function baseTemplate(content: string): string {
+function escapeHtml(input: string): string {
+  return String(input)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function formatTimestamp(): string {
+  return new Date().toLocaleString('en-US', {
+    timeZone: 'America/New_York',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }) + ' ET'
+}
+
+type Field = { label: string; value: string; multiline?: boolean }
+
+function renderFields(fields: Field[]): string {
+  return fields
+    .filter((f) => f.value && f.value.trim())
+    .map((f, i, arr) => {
+      const isLast = i === arr.length - 1
+      const border = isLast ? '' : `border-bottom:1px solid ${LINE};`
+      const val = f.multiline
+        ? `<div style="font-size:15px;color:${INK};line-height:1.6;white-space:pre-wrap;">${escapeHtml(f.value)}</div>`
+        : `<div style="font-size:15px;color:${INK};line-height:1.5;font-weight:500;">${escapeHtml(f.value)}</div>`
+      return `
+      <tr>
+        <td style="padding:14px 0;${border}">
+          <div style="font-size:10px;font-weight:700;color:${MUTED};text-transform:uppercase;letter-spacing:0.14em;margin-bottom:4px;">${f.label}</div>
+          ${val}
+        </td>
+      </tr>`
+    })
+    .join('')
+}
+
+function actionButton(label: string, href: string, primary = false): string {
+  const bg = primary ? NAVY : SURFACE
+  const color = primary ? '#ffffff' : NAVY
+  const border = primary ? NAVY : LINE
+  return `<a href="${href}" style="display:inline-block;background:${bg};color:${color};border:1px solid ${border};border-radius:999px;padding:11px 20px;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:0.02em;margin:4px 4px 0 0;">${label}</a>`
+}
+
+type TemplateOptions = {
+  eyebrow: string
+  heading: string
+  subhead: string
+  fields: Field[]
+  actions: string[]
+  footerNote?: string
+}
+
+function renderEmail(opts: TemplateOptions): string {
+  const fieldsHtml = renderFields(opts.fields)
+  const actionsHtml = opts.actions.join('')
+  const footerNote = opts.footerNote
+    ? `<div style="margin-top:24px;padding:14px 18px;background:${CANVAS};border-radius:10px;border-left:3px solid ${GOLD};"><p style="margin:0;font-size:13px;color:${MUTED};line-height:1.55;">${opts.footerNote}</p></div>`
+    : ''
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
   <title>Precision Works Detailing</title>
 </head>
-<body style="margin:0;padding:0;background:#F5F5F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F5F0;padding:40px 16px;">
+<body style="margin:0;padding:0;background:${CANVAS};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <div style="display:none;font-size:1px;color:${CANVAS};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(opts.subhead)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CANVAS};padding:32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-          <!-- Header -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:${SURFACE};border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(10,22,40,0.08);">
           <tr>
-            <td style="background:#1C1C1E;border-radius:12px 12px 0 0;padding:28px 36px;text-align:center;">
-              <p style="margin:0;color:#C4A86E;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;">PRECISION WORKS DETAILING</p>
+            <td style="background:linear-gradient(135deg,${NAVY} 0%,${NAVY_SOFT} 100%);padding:26px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <div style="color:${GOLD};font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;">PRECISION WORKS</div>
+                    <div style="color:#ffffff;font-size:15px;font-weight:600;margin-top:3px;letter-spacing:0.02em;">Detailing &middot; Mobile Service</div>
+                  </td>
+                  <td align="right" style="vertical-align:top;">
+                    <div style="color:rgba(255,255,255,0.55);font-size:11px;font-weight:600;letter-spacing:0.06em;">${escapeHtml(formatTimestamp())}</div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
-          <!-- Body -->
+
           <tr>
-            <td style="background:#ffffff;padding:36px;border-left:1px solid #E8E8E4;border-right:1px solid #E8E8E4;">
-              ${content}
+            <td style="padding:32px 32px 8px;">
+              <div style="display:inline-block;background:${CANVAS};color:${NAVY};font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;padding:6px 12px;border-radius:999px;">${escapeHtml(opts.eyebrow)}</div>
+              <h1 style="margin:14px 0 6px;font-size:26px;font-weight:700;color:${INK};line-height:1.2;letter-spacing:-0.01em;">${escapeHtml(opts.heading)}</h1>
+              <p style="margin:0;font-size:15px;color:${MUTED};line-height:1.55;">${escapeHtml(opts.subhead)}</p>
             </td>
           </tr>
-          <!-- Footer -->
+
           <tr>
-            <td style="background:#F0F0EB;border:1px solid #E8E8E4;border-top:none;border-radius:0 0 12px 12px;padding:20px 36px;text-align:center;">
-              <p style="margin:0;color:#8A8A8A;font-size:12px;">Precision Works Detailing &mdash; Mobile Auto Detailing &mdash; We Come to You</p>
+            <td style="padding:20px 32px 8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${LINE};border-radius:12px;padding:4px 18px;background:#fdfcf9;">
+                ${fieldsHtml}
+              </table>
+            </td>
+          </tr>
+
+          ${
+            actionsHtml
+              ? `<tr>
+            <td style="padding:22px 32px 8px;">
+              <div style="font-size:11px;font-weight:700;color:${MUTED};text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">Quick actions</div>
+              <div>${actionsHtml}</div>
+            </td>
+          </tr>`
+              : ''
+          }
+
+          <tr>
+            <td style="padding:8px 32px 28px;">
+              ${footerNote}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background:${CANVAS};padding:18px 32px;border-top:1px solid ${LINE};text-align:center;">
+              <p style="margin:0;font-size:12px;color:${MUTED};">Sent from the Precision Works Detailing website</p>
+              <p style="margin:4px 0 0;font-size:11px;color:${MUTED};">Northeast Georgia &middot; Mon–Sat 8 AM – 6 PM &middot; (678) 677-6673</p>
             </td>
           </tr>
         </table>
@@ -57,50 +171,46 @@ function baseTemplate(content: string): string {
 </html>`
 }
 
-function fieldRow(label: string, value: string): string {
-  if (!value) return ''
-  return `
-  <tr>
-    <td style="padding:10px 0;border-bottom:1px solid #F0F0EB;vertical-align:top;width:140px;">
-      <span style="font-size:12px;font-weight:600;color:#8A8A8A;text-transform:uppercase;letter-spacing:0.06em;">${label}</span>
-    </td>
-    <td style="padding:10px 0 10px 16px;border-bottom:1px solid #F0F0EB;vertical-align:top;">
-      <span style="font-size:15px;color:#1C1C1E;">${value}</span>
-    </td>
-  </tr>`
+function normalizePhone(phone: string): string {
+  return phone.replace(/[^\d+]/g, '')
 }
 
 emailRoute.post('/contact', async (c) => {
   const body = await c.req.json()
-  const { name, email, phone, vehicle, message } = body
+  const { name, email, phone, vehicle, message } = body as Record<string, string>
 
   if (!name || !email || !phone) {
     return c.json({ error: 'Name, email, and phone are required.' }, 400)
   }
 
-  const html = baseTemplate(`
-    <h2 style="margin:0 0 6px;font-size:22px;color:#1C1C1E;font-style:italic;">New Contact Inquiry</h2>
-    <p style="margin:0 0 28px;font-size:14px;color:#8A8A8A;">Someone reached out through the Precision Works website.</p>
+  const phoneDigits = normalizePhone(phone)
+  const actions = [
+    actionButton('Reply by Email', `mailto:${email}?subject=${encodeURIComponent('Re: Your detail inquiry')}`, true),
+    actionButton('Call', `tel:${phoneDigits}`),
+    actionButton('Text', `sms:${phoneDigits}`),
+  ]
 
-    <table width="100%" cellpadding="0" cellspacing="0">
-      ${fieldRow('Name', name)}
-      ${fieldRow('Email', email)}
-      ${fieldRow('Phone', phone)}
-      ${vehicle ? fieldRow('Vehicle', vehicle) : ''}
-      ${message ? fieldRow('Message', message) : ''}
-    </table>
-
-    <div style="margin-top:28px;padding:16px 20px;background:#F8F8F5;border-radius:8px;border-left:3px solid #C4A86E;">
-      <p style="margin:0;font-size:13px;color:#5A5A5A;">Reply directly to this email to respond to ${name}.</p>
-    </div>
-  `)
+  const html = renderEmail({
+    eyebrow: 'New Inquiry',
+    heading: `${name} wants a detail`,
+    subhead: `A new lead came in through the website${vehicle ? ` about a ${vehicle}` : ''}.`,
+    fields: [
+      { label: 'Name', value: name },
+      { label: 'Email', value: email },
+      { label: 'Phone', value: phone },
+      { label: 'Vehicle', value: vehicle || '' },
+      { label: 'Message', value: message || '', multiline: true },
+    ],
+    actions,
+    footerNote: `Hit reply and it goes straight to ${escapeHtml(name)}.`,
+  })
 
   try {
     await transporter.sendMail({
       from: `"Precision Works Website" <${FROM}>`,
       to: TO,
       replyTo: email,
-      subject: `New Contact: ${name}`,
+      subject: `New inquiry — ${name}${vehicle ? ` (${vehicle})` : ''}`,
       html,
     })
     return c.json({ success: true })
@@ -112,36 +222,42 @@ emailRoute.post('/contact', async (c) => {
 
 emailRoute.post('/fleet', async (c) => {
   const body = await c.req.json()
-  const { businessName, contactName, email, phone, fleetSize, message } = body
+  const { businessName, contactName, email, phone, fleetSize, message } = body as Record<string, string>
 
   if (!email || !phone) {
     return c.json({ error: 'Email and phone are required.' }, 400)
   }
 
-  const html = baseTemplate(`
-    <h2 style="margin:0 0 6px;font-size:22px;color:#1C1C1E;font-style:italic;">New Fleet Inquiry</h2>
-    <p style="margin:0 0 28px;font-size:14px;color:#8A8A8A;">A business has requested fleet detailing pricing.</p>
+  const phoneDigits = normalizePhone(phone)
+  const actions = [
+    actionButton('Reply by Email', `mailto:${email}?subject=${encodeURIComponent('Re: Fleet pricing')}`, true),
+    actionButton('Call', `tel:${phoneDigits}`),
+  ]
 
-    <table width="100%" cellpadding="0" cellspacing="0">
-      ${businessName ? fieldRow('Business', businessName) : ''}
-      ${contactName ? fieldRow('Contact', contactName) : ''}
-      ${fieldRow('Email', email)}
-      ${fieldRow('Phone', phone)}
-      ${fleetSize ? fieldRow('Fleet Size', fleetSize) : ''}
-      ${message ? fieldRow('Message', message) : ''}
-    </table>
+  const heading = businessName ? `${businessName} is asking about fleet pricing` : 'New fleet pricing request'
 
-    <div style="margin-top:28px;padding:16px 20px;background:#F8F8F5;border-radius:8px;border-left:3px solid #C4A86E;">
-      <p style="margin:0;font-size:13px;color:#5A5A5A;">Reply directly to this email to respond${contactName ? ` to ${contactName}` : ''}.</p>
-    </div>
-  `)
+  const html = renderEmail({
+    eyebrow: 'Fleet Inquiry',
+    heading,
+    subhead: `A business${fleetSize ? ` with ${fleetSize}` : ''} requested pricing.`,
+    fields: [
+      { label: 'Business', value: businessName || '' },
+      { label: 'Contact', value: contactName || '' },
+      { label: 'Email', value: email },
+      { label: 'Phone', value: phone },
+      { label: 'Fleet Size', value: fleetSize || '' },
+      { label: 'Message', value: message || '', multiline: true },
+    ],
+    actions,
+    footerNote: `Hit reply and it goes straight to ${escapeHtml(contactName || businessName || 'them')}.`,
+  })
 
   try {
     await transporter.sendMail({
       from: `"Precision Works Website" <${FROM}>`,
       to: TO,
       replyTo: email,
-      subject: `Fleet Inquiry${businessName ? `: ${businessName}` : ''}${fleetSize ? ` — ${fleetSize}` : ''}`,
+      subject: `Fleet inquiry${businessName ? ` — ${businessName}` : ''}${fleetSize ? ` (${fleetSize})` : ''}`,
       html,
     })
     return c.json({ success: true })

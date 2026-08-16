@@ -1,14 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useMemo, useRef, useState } from 'react'
-const _CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
-const heroPhoto = `${_CDN}/DSC09921-3-1774028142844-e99jgz.jpg`
-const aboutPhoto = `${_CDN}/aboutme-1775611446208-hznwv5.jpg`
-const photo1 = `${_CDN}/DSC01342-2-1774028142629-ratb33.jpg`
-const photo2 = `${_CDN}/DSC01359-1774028142651-i3rbqp.jpg`
-const photo3 = `${_CDN}/DSC01336-1774028142610-hr6ipf.jpg`
-const photo4 = `${_CDN}/DSC09999-7-1774028142977-8597e4.jpg`
-const photo5 = `${_CDN}/DSC09966-3-1774028142928-yech3r.jpg`
-const photo6 = `${_CDN}/DSC09949-2-1774028142904-52o4kk.jpg`
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import photo2 from '../assets/uploads/IMG_2130-1786883717578-u5xzp4.jpg'
+import photo4 from '../assets/uploads/DSC04568-1786883724180-mtthrf.jpg'
+import photo5 from '../assets/uploads/DSC04488-1786883730978-emag3w.jpg'
+import photo6 from '../assets/uploads/IMG_1476-1786883738263-bim2rn.jpg'
 import {
   addOns,
   boatAddOns,
@@ -24,6 +19,11 @@ import { BeforeAfterCard } from '../components/home/BeforeAfterCard'
 import { beforeAfterExamples } from '../components/home/data'
 import { BookingModal } from '../components/home/BookingModal'
 import { Star, ThumbsUp, Layers, ShieldCheck } from 'lucide-react'
+const _CDN = 'https://res.cloudinary.com/dc7kinqks/image/upload/precision-works'
+const heroPhoto = `${_CDN}/DSC09921-3-1774028142844-e99jgz.jpg`
+const aboutPhoto = `${_CDN}/aboutme-1775611446208-hznwv5.jpg`
+const photo1 = `${_CDN}/DSC01342-2-1774028142629-ratb33.jpg`
+const photo3 = `${_CDN}/DSC01336-1774028142610-hr6ipf.jpg`
 const logoImg = `${_CDN}/LOGO_SMALL_cf43984a-e620-458f-975f-31cd5b6bc93b-1774030211175-k00tpe.webp`
 
 // Doubled reviews array for seamless infinite scroll
@@ -43,6 +43,39 @@ export function PrecisionHomePage() {
   const [displayedTotal, setDisplayedTotal] = useState(0)
   const [serviceTab, setServiceTab] = useState<'auto' | 'boat'>('auto')
   const [bookingModalOpen, setBookingModalOpen] = useState(false)
+
+  const [contactForm, setContactForm] = useState({ name: '', email: '', phone: '', vehicle: '', message: '' })
+  const [contactStatus, setContactStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [contactError, setContactError] = useState<string | null>(null)
+
+  const handleContactSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (contactStatus === 'submitting') return
+    if (!contactForm.name.trim() || !contactForm.email.trim() || !contactForm.phone.trim()) {
+      setContactStatus('error')
+      setContactError('Name, email, and phone are required.')
+      return
+    }
+    setContactStatus('submitting')
+    setContactError(null)
+    try {
+      const apiBase = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+      const res = await fetch(`${apiBase}/api/email/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to send message.')
+      }
+      setContactStatus('success')
+      setContactForm({ name: '', email: '', phone: '', vehicle: '', message: '' })
+    } catch (err) {
+      setContactStatus('error')
+      setContactError(err instanceof Error ? err.message : 'Failed to send message.')
+    }
+  }
 
   const pkg = useMemo(
     () => detailPackages.find((p) => p.id === selectedPackage) ?? null,
@@ -204,7 +237,7 @@ export function PrecisionHomePage() {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="#F9C940" aria-hidden="true">
                     <path d="M12 2.75L14.82 8.47L21.14 9.39L16.57 13.85L17.65 20.14L12 17.17L6.35 20.14L7.43 13.85L2.86 9.39L9.18 8.47L12 2.75Z"/>
                   </svg>
-                  83+ Verified Reviews
+                  100+ Verified Reviews
                 </span>
                 {/* Self-Sufficient */}
                 <span className="flex items-center gap-1.5 text-[12px] font-semibold text-white/70">
@@ -223,7 +256,7 @@ export function PrecisionHomePage() {
           <div className="section-shell grid grid-cols-2 divide-x divide-white/10 py-5 text-center text-white md:grid-cols-4">
             {[
               { label: '5.0', sub: 'Google Rating', icon: <Star className="size-5 text-yellow-400 fill-yellow-400" /> },
-              { label: '83+', sub: 'Five-Star Reviews', icon: <ThumbsUp className="size-5 text-blue-300" /> },
+              { label: '100+', sub: 'Five-Star Reviews', icon: <ThumbsUp className="size-5 text-blue-300" /> },
               { label: '5+ Years', sub: 'Of Experience', icon: <Layers className="size-5 text-emerald-300" /> },
               { label: '100%', sub: 'Satisfaction Guarantee', icon: <ShieldCheck className="size-5 text-indigo-300" /> },
             ].map((s) => (
@@ -399,10 +432,15 @@ export function PrecisionHomePage() {
 
         {/* ─── Photo strip ─── */}
         <div className="border-t border-[rgba(0,0,0,0.08)]">
-          <div className="grid h-[260px] grid-cols-3 md:h-[360px] md:grid-cols-6 overflow-hidden">
+          <div className="grid w-full grid-cols-3 gap-0 overflow-hidden sm:grid-cols-6">
             {[photo1, photo2, photo3, photo4, photo5, photo6].map((src, i) => (
-              <div key={i} className="relative overflow-hidden">
-                <img src={src} alt="Precision Works Detailing in action" loading="lazy" className="h-full w-full object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105" />
+              <div key={i} className="relative aspect-square w-full overflow-hidden">
+                <img
+                  src={src}
+                  alt="Precision Works Detailing in action"
+                  loading="lazy"
+                  className="absolute inset-0 block h-full w-full object-cover object-center grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
+                />
               </div>
             ))}
           </div>
@@ -642,7 +680,7 @@ export function PrecisionHomePage() {
             <div className="reveal flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="eyebrow">What Customers Say</p>
-                <h2 className="mt-3 font-display text-[42px] font-bold leading-tight text-[var(--color-navy)]">83+ five-star reviews.</h2>
+                <h2 className="mt-3 font-display text-[42px] font-bold leading-tight text-[var(--color-navy)]">100+ five-star reviews.</h2>
               </div>
               <div className="flex items-center gap-2">
                 {/* Google Stars */}
@@ -794,7 +832,7 @@ export function PrecisionHomePage() {
                   Hey, What's up Y'all!
                 </h2>
                 <p className="mt-5 text-[15px] leading-[1.8] text-[var(--color-muted)]">
-                  I'm Lucas — a 17-year-old entrepreneur and the founder of Precision Works Detailing. I started this company out of a genuine love for cars and a desire to help people feel proud of what they drive.
+                  I'm Lucas — an 18-year-old entrepreneur and the founder of Precision Works Detailing. I started this company out of a genuine love for cars and a desire to help people feel proud of what they drive.
                 </p>
                 <p className="mt-4 text-[15px] leading-[1.8] text-[var(--color-muted)]">
                   I'm fully mobile and self-sufficient — I bring my own water and power to every job. When you book with me, I promise to take the utmost care of your vehicle. Every. Single. Time.
@@ -804,7 +842,7 @@ export function PrecisionHomePage() {
                   {[
                     { icon: '⚡', label: 'Self-sufficient — own water & generator' },
                     { icon: '🛡️', label: 'Fully insured & 100% satisfaction guaranteed' },
-                    { icon: '⭐', label: '83+ five-star Google reviews' },
+                    { icon: '⭐', label: '100+ five-star Google reviews' },
                   ].map((item) => (
                     <li key={item.label} className="flex items-center gap-3 text-[15px] text-[var(--color-text)]">
                       <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[rgba(26,42,76,0.07)] text-base">{item.icon}</span>
@@ -859,26 +897,56 @@ export function PrecisionHomePage() {
               </ul>
             </div>
 
-            <form className="reveal card-surface p-7 rounded-2xl" style={{ transitionDelay: '80ms' }}>
+            <form onSubmit={handleContactSubmit} className="reveal card-surface p-7 rounded-2xl" style={{ transitionDelay: '80ms' }}>
               <div className="space-y-4">
                 {[
-                  { id: 'contact-name', name: 'name', label: 'Name', type: 'text', auto: 'name' },
-                  { id: 'contact-email', name: 'email', label: 'Email', type: 'email', auto: 'email' },
-                  { id: 'contact-phone', name: 'phone', label: 'Phone', type: 'tel', auto: 'tel' },
-                  { id: 'contact-vehicle', name: 'vehicle', label: 'Vehicle (optional)', type: 'text', auto: 'off', placeholder: 'e.g. 2021 Toyota Camry' },
+                  { id: 'contact-name', name: 'name' as const, label: 'Name', type: 'text', auto: 'name' },
+                  { id: 'contact-email', name: 'email' as const, label: 'Email', type: 'email', auto: 'email' },
+                  { id: 'contact-phone', name: 'phone' as const, label: 'Phone', type: 'tel', auto: 'tel' },
+                  { id: 'contact-vehicle', name: 'vehicle' as const, label: 'Vehicle (optional)', type: 'text', auto: 'off', placeholder: 'e.g. 2021 Toyota Camry' },
                 ].map((f) => (
                   <div key={f.id}>
                     <label htmlFor={f.id} className="form-label">{f.label}</label>
-                    <input id={f.id} name={f.name} type={f.type} autoComplete={f.auto} placeholder={'placeholder' in f ? f.placeholder : undefined} className="form-input" />
+                    <input
+                      id={f.id}
+                      name={f.name}
+                      type={f.type}
+                      autoComplete={f.auto}
+                      placeholder={'placeholder' in f ? f.placeholder : undefined}
+                      className="form-input"
+                      value={contactForm[f.name]}
+                      onChange={(e) => setContactForm((prev) => ({ ...prev, [f.name]: e.target.value }))}
+                    />
                   </div>
                 ))}
                 <div>
                   <label htmlFor="contact-message" className="form-label">Message</label>
-                  <textarea id="contact-message" name="message" rows={4} className="form-input" />
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    rows={4}
+                    className="form-input"
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm((prev) => ({ ...prev, message: e.target.value }))}
+                  />
                 </div>
               </div>
-              <button type="submit" className="btn mt-5 inline-flex w-full items-center justify-center rounded-full bg-[var(--color-navy)] py-4 text-[15px] font-bold text-white">
-                Send Message
+              {contactStatus === 'success' && (
+                <p role="status" className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-[14px] font-semibold text-emerald-800">
+                  Thanks! Your message was sent — Lucas will reach out shortly.
+                </p>
+              )}
+              {contactStatus === 'error' && contactError && (
+                <p role="alert" className="mt-4 rounded-lg bg-rose-50 px-4 py-3 text-[14px] font-semibold text-rose-800">
+                  {contactError}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={contactStatus === 'submitting'}
+                className="btn mt-5 inline-flex w-full items-center justify-center rounded-full bg-[var(--color-navy)] py-4 text-[15px] font-bold text-white disabled:opacity-60"
+              >
+                {contactStatus === 'submitting' ? 'Sending…' : 'Send Message'}
               </button>
             </form>
           </div>
@@ -906,7 +974,7 @@ export function PrecisionHomePage() {
             <h3 className="text-[11px] font-bold uppercase tracking-[0.1em] text-white/35">Contact</h3>
             <div className="mt-4 space-y-2 text-[14px] text-white/60">
               <p>+1 (678) 677-6673</p>
-              <p>info@precisionworksdetailing.com</p>
+              <p>lucas@precisionworksdetailing.com</p>
               <p>Serving Northeast Georgia</p>
               <p>Mon–Sat 8 AM – 6 PM</p>
             </div>
