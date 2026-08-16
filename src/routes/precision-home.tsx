@@ -433,16 +433,21 @@ export function PrecisionHomePage() {
         {/* ─── Photo strip ─── */}
         <div className="border-t border-[rgba(0,0,0,0.08)]">
           <div className="grid w-full grid-cols-3 gap-0 overflow-hidden sm:grid-cols-6">
-            {[photo1, photo2, photo3, photo4, photo5, photo6].map((src, i) => (
-              <div key={i} className="relative aspect-square w-full overflow-hidden">
-                <img
-                  src={src}
-                  alt="Precision Works Detailing in action"
-                  loading="lazy"
-                  className="absolute inset-0 block h-full w-full object-cover object-center grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
-                />
-              </div>
-            ))}
+            {[photo1, photo2, photo3, photo4, photo5, photo6].map((src, i) => {
+              const isLandscape = src === photo4
+              return (
+                <div key={i} className="relative aspect-square w-full overflow-hidden">
+                  <img
+                    src={src}
+                    alt="Precision Works Detailing in action"
+                    loading="lazy"
+                    className={`absolute inset-0 block h-full w-full object-cover object-center grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105 ${
+                      isLandscape ? 'scale-[1.6]' : ''
+                    }`}
+                  />
+                </div>
+              )
+            })}
           </div>
         </div>
 
