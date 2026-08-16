@@ -160,7 +160,6 @@ function renderEmail(opts: TemplateOptions): string {
           <tr>
             <td style="background:${CANVAS};padding:18px 32px;border-top:1px solid ${LINE};text-align:center;">
               <p style="margin:0;font-size:12px;color:${MUTED};">Sent from the Precision Works Detailing website</p>
-              <p style="margin:4px 0 0;font-size:11px;color:${MUTED};">Northeast Georgia &middot; Mon–Sat 8 AM – 6 PM &middot; (678) 677-6673</p>
             </td>
           </tr>
         </table>
