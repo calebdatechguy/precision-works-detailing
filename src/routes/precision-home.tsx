@@ -441,8 +441,8 @@ export function PrecisionHomePage() {
                     src={src}
                     alt="Precision Works Detailing in action"
                     loading="lazy"
-                    className={`absolute inset-0 block h-full w-full object-cover object-center grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105 ${
-                      isLandscape ? 'scale-[2.2]' : ''
+                    className={`absolute inset-0 block h-full w-full object-cover object-center grayscale transition-all duration-500 hover:grayscale-0 ${
+                      isLandscape ? 'scale-[2.2] hover:scale-[2.35]' : 'hover:scale-105'
                     }`}
                   />
                 </div>
