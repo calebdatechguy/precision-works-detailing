@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
 const emailRoute = new Hono()
 
@@ -18,8 +19,32 @@ const transporter = nodemailer.createTransport({
   socketTimeout: 15_000,
 })
 
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+
 const TO = process.env.CONTACT_EMAIL || 'lucas@precisionworksdetailing.com'
-const FROM = process.env.SMTP_USER || 'lucas@precisionworksdetailing.com'
+const FROM_ADDR = process.env.EMAIL_FROM || process.env.SMTP_USER || 'lucas@precisionworksdetailing.com'
+const FROM = `"Precision Works Website" <${FROM_ADDR}>`
+
+async function sendEmail(opts: { to: string; replyTo: string; subject: string; html: string }) {
+  if (resend) {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: opts.to,
+      replyTo: opts.replyTo,
+      subject: opts.subject,
+      html: opts.html,
+    })
+    if (error) throw new Error(`${error.name}: ${error.message}`)
+    return
+  }
+  await transporter.sendMail({
+    from: FROM,
+    to: opts.to,
+    replyTo: opts.replyTo,
+    subject: opts.subject,
+    html: opts.html,
+  })
+}
 
 const NAVY = '#0a1628'
 const NAVY_SOFT = '#1a2a4c'
@@ -208,8 +233,7 @@ emailRoute.post('/contact', async (c) => {
   })
 
   try {
-    await transporter.sendMail({
-      from: `"Precision Works Website" <${FROM}>`,
+    await sendEmail({
       to: TO,
       replyTo: email,
       subject: `New inquiry — ${name}${vehicle ? ` (${vehicle})` : ''}`,
@@ -255,8 +279,7 @@ emailRoute.post('/fleet', async (c) => {
   })
 
   try {
-    await transporter.sendMail({
-      from: `"Precision Works Website" <${FROM}>`,
+    await sendEmail({
       to: TO,
       replyTo: email,
       subject: `Fleet inquiry${businessName ? ` — ${businessName}` : ''}${fleetSize ? ` (${fleetSize})` : ''}`,
